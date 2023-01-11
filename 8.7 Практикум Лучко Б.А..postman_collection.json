@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "1223ceaf-6117-46be-9a58-a21945c5b73e",
+		"name": "8.7 Практикум Лучко Б.А.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25184934"
+	},
+	"item": [
+		{
+			"name": "Get API Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Key in responseBody\", function () {\r",
+							"   var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"auth_key\", jsonData.key);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "email",
+						"value": "proba2@rambler.ru",
+						"type": "text"
+					},
+					{
+						"key": "password",
+						"value": "proba2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/key",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"key"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    \r",
+							"});\r",
+							"pm.test(\"Save ID pet in variable pet_id\", function () {\r",
+							"    var jsonData = JSON.parse(responseBody);\r",
+							"    pm.collectionVariables.set(\"pet_id\", jsonData.id);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Save name pet in variable name\", function () {\r",
+							"      var jsonData = JSON.parse(responseBody);\r",
+							"    pm.collectionVariables.set(\"name\", jsonData.name);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "{{name}}",
+							"type": "text"
+						},
+						{
+							"key": "animal_type",
+							"value": "{{animal_type}}",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "{{age}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/create_pet_simple",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"create_pet_simple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change pet name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"first pets without new-created name\", function () {\r",
+							"    var jsonData = JSON.parse(responseBody);\r",
+							"    pm.expect(pm.collectionVariables.get(\"name\")).to.not.equal(jsonData.name);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Save new name pet in variable name\", function () {\r",
+							"      var jsonData = JSON.parse(responseBody);\r",
+							"    pm.collectionVariables.set(\"name\", jsonData.name);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "{{new_name}}",
+							"type": "text"
+						},
+						{
+							"key": "animal_type",
+							"value": "{{animal_type}}",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "{{age}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/pets/{{pet_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filter=my_pets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"first pets with new-created name\", function () {\r",
+							"    var jsonData = JSON.parse(responseBody);\r",
+							"    pm.expect(pm.collectionVariables.get(\"name\")).to.equal(jsonData.pets[0].name);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/pets?filter=my_pets",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"pets"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "my_pets"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{auth_key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "auth_key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_key",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "https://petfriends.skillfactory.ru/",
+			"type": "string"
+		},
+		{
+			"key": "pet_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "animal_type",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "age",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "new_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
